@@ -8,7 +8,7 @@ on:
 
 env:
   DOCKER_IMAGE: kaseykim7123/24kng_webpages
-  ARGOCD_REPO: github.com/kkkikki/24KNG_argocd.git
+  ARGOCD_REPO: kkkikki/24KNG_argocd.git
 
 jobs:
   test:
