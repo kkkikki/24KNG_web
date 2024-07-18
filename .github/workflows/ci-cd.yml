@@ -49,6 +49,7 @@ jobs:
       with:
         repository: ${{ env.ARGOCD_REPO }}
         token: ${{ secrets.ARGOCD_REPO_TOKEN }}
+        fetch-depth: 1
     - name: Update Kubernetes manifests
       run: |
         sed -i 's|image: .*|image: ${{ env.DOCKER_IMAGE }}:${{ github.sha }}|' kubernetes/deployment.yaml
