@@ -55,8 +55,8 @@ jobs:
         sed -i 's|image: .*|image: ${{ env.DOCKER_IMAGE }}:${{ github.sha }}|' kubernetes/deployment.yaml
     - name: Commit and push changes
       run: |
-        git config user.name github-actions
-        git config user.email kaseykim7123@gmail.com
+        git config --global user.name kkkikki
+        git config --globaluser.email kaseykim7123@gmail.com
         git add kubernetes/deployment.yaml
         git commit -m "Update image to ${{ github.sha }}"
         git push
