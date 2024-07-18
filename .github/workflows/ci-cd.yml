@@ -50,6 +50,13 @@ jobs:
         repository: ${{ env.ARGOCD_REPO }}
         token: ${{ secrets.ARGOCD_REPO_TOKEN }}
         fetch-depth: 1
+        path: kubernetes  # 명시적으로 디렉토리 설정
+    - name: Verify deployment.yaml exists
+      run: |
+        if [ ! -f argo-repo/kubernetes/deployment.yaml ]; then
+          echo "File not found!"
+          exit 1
+        fi
     - name: Update Kubernetes manifests
       run: |
         sed -i 's|image: .*|image: ${{ env.DOCKER_IMAGE }}:${{ github.sha }}|' kubernetes/deployment.yaml
