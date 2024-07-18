@@ -53,7 +53,7 @@ jobs:
         path: kubernetes  # 명시적으로 디렉토리 설정
     - name: Verify deployment.yaml exists
       run: |
-        if [ ! -f argo-repo/kubernetes/deployment.yaml ]; then
+        if [ ! -f kubernetes/deployment.yaml ]; then
           echo "File not found!"
           exit 1
         fi
