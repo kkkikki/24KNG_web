@@ -24,7 +24,7 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
     - name: Run tests
-      run: python ./mysite1/manage.py test
+      run: python ./vod/manage.py test
 
   build-and-push:
     needs: test
