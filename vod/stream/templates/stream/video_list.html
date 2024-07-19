@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Video List</title>
+</head>
+<body>
+    <h1>Videos</h1>
+    {% for video in videos %}
+        <a href="{% url 'video_player' video.id %}">
+            <img src="{{ video.thumbnail.url }}" alt="{{ video.title }}" width="200">
+        </a>
+    {% endfor %}
+</body>
+</html>

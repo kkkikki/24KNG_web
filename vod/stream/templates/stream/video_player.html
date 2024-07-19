@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ video.title }}</title>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        video {
+            width: 100%;
+            height: auto;
+            max-width: 640px;
+        }
+    </style>
+</head>
+<body>
+    <h1>{{ video.title }}</h1>
+    <video id="video" controls></video>
+    <div id="error-message" style="display: none; color: red;"></div>
+    <script>
+        var video = document.getElementById('video');
+        var errorMessage = document.getElementById('error-message');
+        var videoSrc = '{{ video.cloudfront_url }}';
+
+        function loadVideo() {
+            if (videoSrc.endsWith('.m3u8')) {
+                if (Hls.isSupported()) {
+                    var hls = new Hls({
+                        debug: true,
+                        manifestLoadingTimeOut: 15000,
+                        manifestLoadingMaxRetry: 5,
+                    });
+                    hls.loadSource(videoSrc);
+                    hls.attachMedia(video);
+                    hls.on(Hls.Events.MANIFEST_PARSED, function() {
+                        video.play().catch(function(error) {
+                            console.log("Play failed:", error);
+                            errorMessage.textContent = "재생을 시작하려면 화면을 클릭하세요.";
+                            errorMessage.style.display = "block";
+                        });
+                    });
+                    hls.on(Hls.Events.ERROR, function(event, data) {
+                        console.log('HLS error:', data);
+                        if (data.fatal) {
+                            switch(data.type) {
+                                case Hls.ErrorTypes.NETWORK_ERROR:
+                                    console.log("네트워크 오류, 다시 시도합니다...");
+                                    hls.startLoad();
+                                    break;
+                                case Hls.ErrorTypes.MEDIA_ERROR:
+                                    console.log("미디어 오류, 복구를 시도합니다...");
+                                    hls.recoverMediaError();
+                                    break;
+                                default:
+                                    console.log("복구 불가능한 오류, 비디오 로딩을 중단합니다.");
+                                    errorMessage.textContent = "비디오를 로드할 수 없습니다. 새로고침을 시도해주세요.";
+                                    errorMessage.style.display = "block";
+                                    hls.destroy();
+                                    break;
+                            }
+                        }
+                    });
+                } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+                    video.src = videoSrc;
+                    video.addEventListener('loadedmetadata', function() {
+                        video.play().catch(function(error) {
+                            console.log("Play failed:", error);
+                            errorMessage.textContent = "재생을 시작하려면 화면을 클릭하세요.";
+                            errorMessage.style.display = "block";
+                        });
+                    });
+                }
+            } else {
+                video.src = videoSrc;
+                video.addEventListener('loadedmetadata', function() {
+                    video.play().catch(function(error) {
+                        console.log("Play failed:", error);
+                        errorMessage.textContent = "재생을 시작하려면 화면을 클릭하세요.";
+                        errorMessage.style.display = "block";
+                    });
+                });
+            }
+        }
+
+        // 페이지 로드 시 비디오 로딩 시도
+        window.addEventListener('load', loadVideo);
+
+        // 5초 후 다시 시도
+        setTimeout(loadVideo, 5000);
+
+        // 사용자 상호작용으로 재생 시도
+        video.addEventListener('click', function() {
+            video.play().catch(function(error) {
+                console.log("Play failed:", error);
+            });
+        });
+    </script>
+</body>
+</html>
