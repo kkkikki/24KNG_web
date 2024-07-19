@@ -22,9 +22,13 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
+        python -m pip install Pillow
         pip install -r requirements.txt
+        pip install mysqlclient
+        sudo apt-get update
+        sudo apt-get install -y libmysqlclient-dev
     - name: Run tests
-      run: python ./mysite1/manage.py test
+      run: python ./vod/manage.py test
 
   build-and-push:
     needs: test
