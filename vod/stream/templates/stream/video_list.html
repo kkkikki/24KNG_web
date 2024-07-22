@@ -1,14 +1,106 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Video List</title>
+    <title>24KNG - Streaming at its Finest</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            background-color: #141414;
+            color: #ffffff;
+        }
+        .header {
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 1rem 4%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+        .logo {
+            color: #e50914;
+            font-size: 2rem;
+            font-weight: bold;
+            text-decoration: none;
+        }
+        .main-content {
+            padding-top: 80px;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+        .row {
+            margin-bottom: 40px;
+        }
+        .row-title {
+            font-size: 1.4vw;
+            color: #e5e5e5;
+            font-weight: bold;
+            margin-bottom: 0.5em;
+            margin-left: 4%;
+        }
+        .thumbnail-slider {
+            display: flex;
+            overflow-x: auto;
+            padding: 20px 4%;
+            scroll-behavior: smooth;
+        }
+        .thumbnail-slider::-webkit-scrollbar {
+            display: none;
+        }
+        .thumbnail {
+            flex: 0 0 auto;
+            width: 16.66%;
+            padding: 0 2px;
+            transition: transform 0.3s ease-in-out;
+        }
+        .thumbnail:hover {
+            transform: scale(1.1);
+            z-index: 2;
+        }
+        .thumbnail img {
+            width: 100%;
+            height: auto;
+            border-radius: 4px;
+        }
+        .thumbnail-title {
+            font-size: 0.9vw;
+            margin-top: 0.3em;
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    </style>
 </head>
 <body>
-    <h1>Videos</h1>
-    {% for video in videos %}
-        <a href="{% url 'video_player' video.id %}">
-            <img src="{{ video.thumbnail.url }}" alt="{{ video.title }}" width="200">
-        </a>
-    {% endfor %}
+    <header class="header">
+        <a href="#" class="logo">24KNG</a>
+    </header>
+    <main class="main-content">
+        <div class="row">
+            <h2 class="row-title">All Videos</h2>
+            <div class="thumbnail-slider">
+                {% for video in videos %}
+                    <div class="thumbnail">
+                        <a href="{% url 'video_player' video.id %}">
+                            <img src="{{ video.thumbnail.url }}" alt="{{ video.title }} thumbnail" width="300" height="169">
+                            <div class="thumbnail-title">{{ video.title }}</div>
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </main>
+    <script>
+        document.querySelectorAll('.thumbnail').forEach(thumbnail => {
+            thumbnail.addEventListener('click', function(e) {
+                e.preventDefault();
+                const link = this.querySelector('a').href;
+                window.location.href = link;
+            });
+        });
+    </script>
 </body>
 </html>
