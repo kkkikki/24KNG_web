@@ -16,18 +16,16 @@ import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-c&ktho*@h)&)kuf!ks)&af5wwsvfn&l)lp2z_of5!d$9%@s-7)'
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-c&ktho*@h)&)kuf!ks)&af5wwsvfn&l)lp2z_of5!d$9%@s-7)')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DEBUG', '1') == '1'
 
-ALLOWED_HOSTS = ['43.202.68.244', 'localhost']
-
+ALLOWED_HOSTS = ['43.202.68.244', 'localhost', '*']
 
 # Application definition
 
@@ -71,18 +69,17 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'vod.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'project_24kng',
-        'USER': 'projectadmin',
-        'PASSWORD': 'projectuserpassword',
-        'HOST': '3.34.51.144',
-        'PORT': '3306',
+        'NAME': os.environ.get('DB_NAME', 'project_24kng'),
+        'USER': os.environ.get('DB_USER', 'projectadmin'),
+        'PASSWORD': os.environ.get('DB_PASSWORD', 'projectuserpassword'),
+        'HOST': os.environ.get('DB_HOST', '3.34.51.144'),
+        'PORT': os.environ.get('DB_PORT', '3306'),
     }
 }
 
@@ -104,10 +101,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
@@ -121,11 +114,14 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
