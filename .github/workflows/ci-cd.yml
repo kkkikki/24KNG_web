@@ -5,7 +5,7 @@ on:
   pull_request:
     branches: [ main ]
 env:
-  DOCKER_IMAGE: vxztu2/07252kng:${{ github.sha }}
+  DOCKER_IMAGE: kaseykim7123/07252kng:${{ github.sha }}
   ARGOCD_REPO: kkkikki/24KNG_argocd
 
 jobs:
