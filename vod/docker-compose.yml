@@ -2,7 +2,7 @@ version: '3'
 
 services:
   web:
-    image: vxztu2/24kng:new
+    build: .
     ports:
       - "8000:8000"
     volumes:
