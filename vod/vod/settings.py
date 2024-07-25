@@ -78,7 +78,7 @@ DATABASES = {
         'NAME': os.environ.get('DB_NAME', 'project_24kng'),
         'USER': os.environ.get('DB_USER', 'projectadmin'),
         'PASSWORD': os.environ.get('DB_PASSWORD', 'projectuserpassword'),
-        'HOST': os.environ.get('DB_HOST', '3.38.153.10'),
+        'HOST': os.environ.get('DB_HOST', '15.164.227.134'),
         'PORT': os.environ.get('DB_PORT', '3306'),
     }
 }
