@@ -4,3 +4,6 @@
 [submodule "git_vod/ssl"]
 	path = git_vod/ssl
 	url = https://github.com/kkkikki/24KNG_sub.git
+[submodule "vod/ssl"]
+	path = vod/ssl
+	url = https://github.com/kkkikki/24KNG_sub.git
