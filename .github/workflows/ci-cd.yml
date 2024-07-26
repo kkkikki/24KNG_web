@@ -39,8 +39,9 @@ jobs:
         token: ${{ secrets.ACCESS_TOKEN }}
     - name: Build Docker image
       run: |
-        docker build -t ${{ env.DOCKER_IMAGE }}:${{ github.sha }} /vod
-        docker build -t ${{ env.DOCKER_IMAGE }}:latest /vod
+        docker build -t ${{ env.DOCKER_IMAGE }}:${{ github.sha }} .
+        docker build -t ${{ env.DOCKER_IMAGE }}:latest .
+      working-directory: ./vod
     - name: Login to DockerHub
       uses: docker/login-action@v1
       with:
