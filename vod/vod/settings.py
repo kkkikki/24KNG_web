@@ -75,11 +75,11 @@ WSGI_APPLICATION = 'vod.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.environ.get('DB_NAME', 'project_24kng'),
-        'USER': os.environ.get('DB_USER', 'projectadmin'),
-        'PASSWORD': os.environ.get('DB_PASSWORD', 'projectuserpassword'),
-        'HOST': os.environ.get('DB_HOST', '172.31.0.88'),
-        'PORT': os.environ.get('DB_PORT', '3306'),
+        'NAME': os.getenv('DB_NAME'),
+        'USER': os.getenv('DB_USER'),
+        'PASSWORD': os.getenv('DB_PASSWORD'),
+        'HOST': os.getenv('DB_HOST'),
+        'PORT': '3306',
     }
 }
 
