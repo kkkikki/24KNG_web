@@ -1,7 +1,7 @@
 version: '3'
 services:
   web:
-    image: vxztu2/07252kng
+    image: vxztu2/0726kng
     ports:
       - "8000:8000"
     volumes:
