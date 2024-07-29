@@ -36,6 +36,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Build Docker image
+      working-directory: ./test/app/vod
       run: |
         docker build -t ${{ env.DOCKER_IMAGE }}:${{ github.sha }} .
         docker build -t ${{ env.DOCKER_IMAGE }}:latest .
