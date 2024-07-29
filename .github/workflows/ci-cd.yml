@@ -77,6 +77,6 @@ jobs:
         cd argo-repo
         git config --global user.name "kkkikki"
         git config --global user.email "kaseykim7123@gmail.com"
-        git add test2/deployments.yaml
+        git add test2/deployment.yaml
         git commit -m "Update image to ${{ github.sha }}"
         git push
