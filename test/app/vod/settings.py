@@ -5,9 +5,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-default-key')
 
-DEBUG = os.environ.get('DEBUG', '0') == '1'
+DEBUG = os.environ.get('DEBUG', '1') == '1'
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'www.24kng.fun']
+ALLOWED_HOSTS = ['localhost', '*']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -55,7 +55,7 @@ DATABASES = {
         'NAME': os.environ.get('DB_NAME', 'project_24kng'),
         'USER': os.environ.get('DB_USER', 'projectadmin'),
         'PASSWORD': os.environ.get('DB_PASSWORD', 'projectuserpassword'),
-        'HOST': os.environ.get('DB_HOST', '3.36.48.82'),
+        'HOST': os.environ.get('DB_HOST', '3.36.115.185'),
         'PORT': os.environ.get('DB_PORT', '3306'),
     }
 }

@@ -1,37 +1,35 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: vod-app
+  name: vod-deployment
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
-      app: vod-app
+      app: vod
   template:
     metadata:
       labels:
-        app: vod-app
+        app: vod
     spec:
       containers:
-      - name: vod-app
-        image: kaseykim7123/24kng_webpages:latest
+      - name: vod
+        image: vxztu2/0729kng:v1
+        imagePullPolicy: Always
         ports:
         - containerPort: 8000
         env:
-        - name: DB_HOST
-          value: db-service
+        - name: DEBUG
+          value: "1"
+        - name: SECRET_KEY
+          value: "your_secret_key_here"
         - name: DB_NAME
-          valueFrom:
-            secretKeyRef:
-              name: db-secrets
-              key: db-name
+          value: "project_24kng"
         - name: DB_USER
-          valueFrom:
-            secretKeyRef:
-              name: db-secrets
-              key: db-user
+          value: "projectadmin"
         - name: DB_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: db-secrets
-              key: db-password
+          value: "projectuserpassword"
+        - name: DB_HOST
+          value: "3.36.115.185"
+        - name: DB_PORT
+          value: "3306"

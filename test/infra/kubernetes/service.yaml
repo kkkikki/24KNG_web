@@ -4,7 +4,7 @@ metadata:
   name: vod-service
 spec:
   selector:
-    app: vod-app
+    app: vod
   ports:
     - protocol: TCP
       port: 80
