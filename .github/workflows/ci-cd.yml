@@ -28,7 +28,7 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y libmysqlclient-dev
     - name: Run tests
-      run: python ./vod/manage.py test
+      run: python ./test/app/manage.py test
 
   build-and-push:
     needs: test
@@ -63,18 +63,18 @@ jobs:
         path: argo-repo  # 명시적으로 디렉토리 설정
     - name: Verify deployments.yaml exists
       run: |
-        if [ ! -f argo-repo/kubernetes/deployments.yaml ]; then
+        if [ ! -f argo-repo/test2/deployments.yaml ]; then
           echo "File not found!"
           exit 1
         fi
     - name: Update Kubernetes manifests
       run: |
-        sed -i 's|image: .*|image: ${{ env.DOCKER_IMAGE }}:${{ github.sha }}|' argo-repo/kubernetes/deployments.yaml
+        sed -i 's|image: .*|image: ${{ env.DOCKER_IMAGE }}:${{ github.sha }}|' argo-repo/test2/deployments.yaml
     - name: Commit and push changes
       run: |
         cd argo-repo
         git config --global user.name "kkkikki"
         git config --global user.email "kaseykim7123@gmail.com"
-        git add kubernetes/deployments.yaml
+        git add test2/deployments.yaml
         git commit -m "Update image to ${{ github.sha }}"
         git push
