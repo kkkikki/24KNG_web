@@ -63,15 +63,15 @@ jobs:
         token: ${{ secrets.ARGOCD_REPO_TOKEN }}
         fetch-depth: 1
         path: argo-repo  # 명시적으로 디렉토리 설정
-    - name: Verify deployments.yaml exists
+    - name: Verify deployment.yaml exists
       run: |
-        if [ ! -f argo-repo/test2/deployments.yaml ]; then
+        if [ ! -f argo-repo/test2/deployment.yaml ]; then
           echo "File not found!"
           exit 1
         fi
     - name: Update Kubernetes manifests
       run: |
-        sed -i 's|image: .*|image: ${{ env.DOCKER_IMAGE }}:${{ github.sha }}|' argo-repo/test2/deployments.yaml
+        sed -i 's|image: .*|image: ${{ env.DOCKER_IMAGE }}:${{ github.sha }}|' argo-repo/test2/deployment.yaml
     - name: Commit and push changes
       run: |
         cd argo-repo
