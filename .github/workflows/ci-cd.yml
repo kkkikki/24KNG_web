@@ -7,18 +7,12 @@ on:
     branches: [ main ]
 
 env:
-  DOCKER_IMAGE: vxztu2/24kng_webpages
-  ARGOCD_REPO: TurtleShip1904/24KNG_argocd
+  DOCKER_IMAGE: kaseykim7123/24kng_webpages
+  ARGOCD_REPO: kkkikki/24KNG_argocd
 
 jobs:
   test:
     runs-on: ubuntu-latest
-    env:
-      DB_NAME: ${{ secrets.DB_NAME }}
-      DB_USER: ${{ secrets.DB_USER }}
-      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-      DB_HOST: ${{ secrets.DB_HOST }}
-      DB_PORT: 3306
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python
@@ -118,7 +112,7 @@ jobs:
     - name: Commit and push changes
       run: |
         cd argo-repo
-        git config --global user.name "TurtleShip1904"
+        git config --global user.name "kkkikki"
         git config --global user.email "kaseykim7123@gmail.com"
         git add test2/deployment.yaml
         git commit -m "Update image to ${{ github.sha }}"
