@@ -96,18 +96,18 @@ jobs:
     - name: Apply Kubernetes Secret directly
       run: |
         kubectl apply -f - <<EOF
-        apiVersion: v1
-        kind: Secret
-        metadata:
-          name: db-credentials
-        type: Opaque
-        data:
-          DB_PASSWORD: $(echo -n "${{ secrets.DB_PASSWORD }}" | base64)
-          DB_HOST: $(echo -n "${{ secrets.DB_HOST }}" | base64)
-          DB_NAME: $(echo -n "${{ secrets.DB_NAME }}" | base64)
-          DB_USER: $(echo -n "${{ secrets.DB_USER }}" | base64)
-          SECRET_KEY: $(echo -n "${{ secrets.SECRET_KEY }}" | base64)
-        EOF
+apiVersion: v1
+kind: Secret
+metadata:
+  name: db-credentials
+type: Opaque
+data:
+  DB_PASSWORD: $(echo -n "${{ secrets.DB_PASSWORD }}" | base64)
+  DB_HOST: $(echo -n "${{ secrets.DB_HOST }}" | base64)
+  DB_NAME: $(echo -n "${{ secrets.DB_NAME }}" | base64)
+  DB_USER: $(echo -n "${{ secrets.DB_USER }}" | base64)
+  SECRET_KEY: $(echo -n "${{ secrets.SECRET_KEY }}" | base64)
+EOF
 
     - name: Verify deployment.yaml exists
       run: |
