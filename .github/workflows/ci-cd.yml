@@ -53,6 +53,7 @@ jobs:
     - name: Run tests
       run: |
         source .env
+        echo "DB_NAME: $DB_NAME"
         python ./test/app/manage.py test
 
 
