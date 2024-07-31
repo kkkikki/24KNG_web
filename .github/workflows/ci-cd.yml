@@ -27,53 +27,15 @@ jobs:
         pip install mysqlclient
         sudo apt-get update
         sudo apt-get install -y libmysqlclient-dev
-
-    - name: Set environment variables
-      run: |
-        echo "DB_NAME=${{ secrets.DB_NAME }}" >> $GITHUB_ENV
-        echo "DB_USER=${{ secrets.DB_USER }}" >> $GITHUB_ENV
-        echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> $GITHUB_ENV
-        echo "DB_HOST=${{ secrets.DB_HOST }}" >> $GITHUB_ENV
-        echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> $GITHUB_ENV
-        echo "DEBUG=False" >> $GITHUB_ENV
-
-    - name: Debug Secrets
-      run: |
-        echo "DB_NAME=${{ secrets.DB_NAME }}"
-        echo "DB_USER=${{ secrets.DB_USER }}"
-        echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}"
-        echo "DB_HOST=${{ secrets.DB_HOST }}"
-
-
-    - name: Create .env file
-      run: |
-        set -e
-        touch .env
-        echo "Touched .env file" >> debug.log
-        echo "DB_NAME=${{ secrets.DB_NAME }}" >> .env
-        echo "DB_USER=${{ secrets.DB_USER }}" >> .env
-        echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
-        echo "DB_HOST=${{ secrets.DB_HOST }}" >> .env
-        cat .env
-        cat debug.log
-        ls -al
-        echo "Finished creating .env file"
-
-        # Django 프로젝트 루트 디렉토리로 .env 파일 복사
-        cp .env ./test/app/.env
-        echo "Copied .env file to Django project root"
-        ls -al ./test/app
-
     - name: Run tests
-      run: |
-        cd ./test/app
-        echo "Current directory: $(pwd)"
-        echo "Contents of current directory:"
-        ls -al
-        echo "Contents of .env file:"
-        cat .env
-        echo "DB_NAME from environment: $DB_NAME"
-        python manage.py test
+      env:
+        SECRET_KEY: ${{ SECRET_KEY }}
+        DB_NAME: ${{ secrets.DB_NAME }}
+        DB_USER: ${{ secrets.DB_USER }}
+        DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+        DB_HOST: ${{ secrets.DB_HOST }}
+        DB_PORT: ${{ secrets.DB_PORT }}
+      run: python ./vod/manage.py test
 
 
   build-and-push:
