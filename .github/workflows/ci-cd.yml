@@ -50,6 +50,11 @@ jobs:
         ls -al
         echo "Finished creating .env file"
 
+        # Django 프로젝트 루트 디렉토리로 .env 파일 복사
+        cp .env ./test/app/.env
+        echo "Copied .env file to Django project root"
+        ls -al ./test/app
+
     - name: Run tests
       run: |
         source .env
