@@ -3,11 +3,11 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-default-key')
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-c&ktho*@h)&)kuf!ks)&af5wwsvfn&l)lp2z_of5!d$9%@s-7)')
 
-DEBUG = os.environ.get('DEBUG', '1') == '1'
+DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '*']
+ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
     'django.contrib.admin',

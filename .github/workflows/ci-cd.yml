@@ -38,12 +38,17 @@ jobs:
 
     - name: Create .env file
       run: |
+        set -e
         touch .env
+        echo "Touched .env file" >> debug.log
         echo "DB_NAME=${{ secrets.DB_NAME }}" >> .env
         echo "DB_USER=${{ secrets.DB_USER }}" >> .env
         echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
         echo "DB_HOST=${{ secrets.DB_HOST }}" >> .env
         cat .env
+        cat debug.log
+        ls -al
+        echo "Finished creating .env file"
 
     - name: Run tests
       run: |
