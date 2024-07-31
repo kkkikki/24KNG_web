@@ -7,8 +7,8 @@ on:
     branches: [ main ]
 
 env:
-  DOCKER_IMAGE: kaseykim7123/24kng_webpages
-  ARGOCD_REPO: kkkikki/24KNG_argocd
+  DOCKER_IMAGE: vxztu2/24kng_webpages
+  ARGOCD_REPO: TurtleShip1904/24KNG_argocd
 
 jobs:
   test:
@@ -118,7 +118,7 @@ jobs:
     - name: Commit and push changes
       run: |
         cd argo-repo
-        git config --global user.name "kkkikki"
+        git config --global user.name "TurtleShip1904"
         git config --global user.email "kaseykim7123@gmail.com"
         git add test2/deployment.yaml
         git commit -m "Update image to ${{ github.sha }}"
