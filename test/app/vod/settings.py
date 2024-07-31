@@ -55,7 +55,7 @@ DATABASES = {
         'NAME': os.environ.get('DB_NAME', 'project_24kng'),
         'USER': os.environ.get('DB_USER', 'projectadmin'),
         'PASSWORD': os.environ.get('DB_PASSWORD', 'projectuserpassword'),
-        'HOST': os.environ.get('DB_HOST', '3.36.115.185'),
+        'HOST': os.environ.get('DB_HOST', 'testforweb0731.c1euac02wz3l.ap-northeast-2.rds.amazonaws.com'),
         'PORT': os.environ.get('DB_PORT', '3306'),
     }
 }
