@@ -86,7 +86,6 @@ jobs:
       run: |
         mkdir -p $HOME/.kube
         echo "$KUBE_CONFIG_DATA" > $HOME/.kube/config
-        kubectl apply -f deployment.yaml
 
     - name: create secret
       run: |
@@ -95,7 +94,6 @@ jobs:
           --from-literal=DB_HOST='${{ secrets.DB_HOST }}' \
           --from-literal=DB_NAME='${{ secrets.DB_NAME }}' \
           --from-literal=DB_USER='${{ secrets.DB_USER }}' \
-          --from-literal=DB_USER='${{ secrets.KUBE_CONFIG_DATA }}' \
           --from-literal=SECRET_KEY='${{ secrets.SECRET_KEY }}'
 
 
