@@ -80,6 +80,11 @@ jobs:
         fetch-depth: 1
         path: argo-repo  # 명시적으로 디렉토리 설정
 
+    - name: Set up kubectl # 추가된 단계: kubectl 설정
+      uses: azure/setup-kubectl@v1
+      with:
+        version: 'latest'
+
     - name: Deploy to Kubernetes
       env:
         KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
@@ -87,15 +92,22 @@ jobs:
         mkdir -p $HOME/.kube
         echo "$KUBE_CONFIG_DATA" > $HOME/.kube/config
 
-    - name: create secret
-      run: |
-        kubectl create secret generic db-credentials \
-          --from-literal=DB_PASSWORD='${{ secrets.DB_PASSWORD }}' \
-          --from-literal=DB_HOST='${{ secrets.DB_HOST }}' \
-          --from-literal=DB_NAME='${{ secrets.DB_NAME }}' \
-          --from-literal=DB_USER='${{ secrets.DB_USER }}' \
-          --from-literal=SECRET_KEY='${{ secrets.SECRET_KEY }}'
 
+    - name: Apply Kubernetes Secret directly
+      run: |
+        kubectl apply -f - <<EOF
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: db-credentials
+        type: Opaque
+        data:
+          DB_PASSWORD: $(echo -n "${{ secrets.DB_PASSWORD }}" | base64)
+          DB_HOST: $(echo -n "${{ secrets.DB_HOST }}" | base64)
+          DB_NAME: $(echo -n "${{ secrets.DB_NAME }}" | base64)
+          DB_USER: $(echo -n "${{ secrets.DB_USER }}" | base64)
+          SECRET_KEY: $(echo -n "${{ secrets.SECRET_KEY }}" | base64)
+        EOF
 
     - name: Verify deployment.yaml exists
       run: |
