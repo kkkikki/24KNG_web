@@ -95,7 +95,7 @@ jobs:
 
     - name: Apply Kubernetes Secret directly
       run: |
-        kubectl apply -f - <<EOF
+        kubectl apply --validate=false -f - <<EOF
         apiVersion: v1
         kind: Secret
         metadata:
