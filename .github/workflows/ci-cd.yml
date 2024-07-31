@@ -82,7 +82,7 @@ jobs:
         path: argo-repo  # 명시적으로 디렉토리 설정
     - name: Verify deployment.yaml exists
       run: |
-        if [ ! -f argo-repo/manifeset/deployment.yaml ]; then
+        if [ ! -f argo-repo/manifest/deployment.yaml ]; then
           echo "File not found!"
           exit 1
         fi
