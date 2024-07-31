@@ -43,7 +43,6 @@ jobs:
         DB_USER: ${{ secrets.DB_USER }}
         DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
         DB_HOST: ${{ secrets.DB_HOST }}
-        DB_PORT: ${{ secrets.DB_PORT }}
       run: python ./app/manage.py test
 
 
@@ -80,15 +79,27 @@ jobs:
         token: ${{ secrets.ARGOCD_REPO_TOKEN }}
         fetch-depth: 1
         path: argo-repo  # 명시적으로 디렉토리 설정
+
+    - name: create secret
+      run: |
+        kubectl create secret generic db-credentials \
+        --from-literal=DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
+        --from-literal=DB_HOST=${{ secrets.DB_HOST }} \
+        --from-literal=DB_NAME=${{ secrets.DB_NAME }} \
+        --from-literal=DB_USER=${{ secrets.DB_USER }} \
+        --from-literal=SECRET_KEY=${{ secrets.SECRET_KEY }}
+
     - name: Verify deployment.yaml exists
       run: |
         if [ ! -f argo-repo/manifest/deployment.yaml ]; then
           echo "File not found!"
           exit 1
         fi
+
     - name: Update Kubernetes manifests
       run: |
         sed -i 's|image: .*|image: ${{ env.DOCKER_IMAGE }}:${{ github.sha }}|' argo-repo/manifest/deployment.yaml
+
     - name: Commit and push changes
       run: |
         cd argo-repo
