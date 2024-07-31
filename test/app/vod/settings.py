@@ -7,7 +7,7 @@ load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-c&ktho*@h)&)kuf!ks)&af5wwsvfn&l)lp2z_of5!d$9%@s-7)')
+SECRET_KEY = os.getenv('SECRET_KEY', 'default-secret-key')
 
 DEBUG = True
 
@@ -59,7 +59,7 @@ DATABASES = {
         'NAME': os.getenv('DB_NAME'),
         'USER': os.getenv('DB_USER'),
         'PASSWORD': os.getenv('DB_PASSWORD'),
-        'HOST': os.getenv('DB_HOST','default'),
+        'HOST': os.getenv('DB_HOST','localhost'),
         'PORT': '3306'
     }
 }
