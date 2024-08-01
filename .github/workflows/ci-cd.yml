@@ -109,7 +109,6 @@ jobs:
 
     - name: Verify kubectl configuration
       run: |
-        kubectl config view
         kubectl get pods --all-namespaces
 
     - name: Apply Kubernetes Secret directly
