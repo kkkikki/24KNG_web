@@ -95,6 +95,12 @@ jobs:
         mv linux_amd64-gke-gcloud-auth-plugin ~/.kube/gke-gcloud-auth-plugin
         echo "export PATH=$PATH:~/.kube" >> $GITHUB_ENV
 
+    - name: Verify kubectl configuration
+      run: |
+        kubectl config view
+        kubectl cluster-info
+
+
     - name: Authenticate with GCP
       uses: google-github-actions/auth@v1
       with:
