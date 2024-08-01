@@ -90,7 +90,7 @@ jobs:
     - name: Configure kubectl
       run: |
         aws eks get-token --cluster-name ${{ secrets.EKS_CLUSTER_NAME }}
-        aws eks update-kubeconfig --name ${{ secrets.EKS_CLUSTER_NAME }} --region ap-northeast-2
+        aws eks update-kubeconfig --name ${{ secrets.EKS_CLUSTER_NAME }} --region ${{ secrets.AWS_REGION }}
 
     - name: Verify kubectl configuration
       run: |
