@@ -93,7 +93,12 @@ jobs:
         chmod +x kubectl
         sudo mv kubectl /usr/local/bin/
   
-  
+     - name: Install AWS CLI
+       run: |
+        curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+        unzip awscliv2.zip
+        sudo ./aws/install
+    
     - name: Install aws-iam-authenticator
       run: |
         curl -o aws-iam-authenticator https://amazon-eks.s3-us-west-2.amazonaws.com/1.16.8/2020-04-16/bin/linux/amd64/aws-iam-authenticator
@@ -104,6 +109,9 @@ jobs:
       run: |
         aws eks get-token --cluster-name ${{ secrets.EKS_CLUSTER_NAME }}
         aws eks update-kubeconfig --name ${{ secrets.EKS_CLUSTER_NAME }} --region ${{ secrets.AWS_REGION }}
+        kubectl config set-credentials aws --token=$(cat /tmp/token)
+        kubectl config set-context --current --user=aws
+
 
     - name: Verify kubectl configuration
       run: |
