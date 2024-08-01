@@ -69,7 +69,7 @@ jobs:
         docker push ${{ env.DOCKER_IMAGE }}:${{ github.sha }}
         docker push ${{ env.DOCKER_IMAGE }}:latest
 
-  update-argocd-repo:
+  update-argocd-repo: 
     needs: build-and-push
     runs-on: ubuntu-latest
     steps:
@@ -93,7 +93,7 @@ jobs:
         chmod +x kubectl
         sudo mv kubectl /usr/local/bin/
   
-     - name: Install AWS CLI
+    - name: Install AWS CLI
        run: |
         curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
         unzip awscliv2.zip
