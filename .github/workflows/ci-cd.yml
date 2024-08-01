@@ -91,7 +91,7 @@ jobs:
       run: gcloud container clusters get-credentials cluster-1 --zone us-east1-c --project ${{ secrets.GCP_PROJECT_ID }}
             
     - name: Set up kubectl
-      uses: google-github-actions/setup-kubectl@v1
+      uses: google-github-actions/setup-gcloud@v1
       with:
         version: 'latest'
 
