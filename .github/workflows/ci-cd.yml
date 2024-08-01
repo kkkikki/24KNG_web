@@ -101,15 +101,12 @@ jobs:
 
     - name: Configure kubectl
       run: |
-        aws eks get-token --cluster-name ${{ secrets.EKS_CLUSTER_NAME }}
+        TOKEN=$(aws eks get-token --cluster-name ${{ secrets.EKS_CLUSTER_NAME }} --region ${{ secrets.AWS_REGION }} --output json | jq -r '.status.token')
         aws eks update-kubeconfig --name ${{ secrets.EKS_CLUSTER_NAME }} --region ${{ secrets.AWS_REGION }}
-        kubectl config set-credentials aws --token=$(cat /tmp/token)
+        kubectl config set-credentials aws --token=$TOKEN
         kubectl config set-context --current --user=aws
 
-
     - name: Verify kubectl configuration
-      env:
-        KUBECONFIG: ${{ secrets.KUBECONFIG }}
       run: |
         kubectl get pods --all-namespaces
 
