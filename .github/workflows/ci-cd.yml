@@ -108,6 +108,8 @@ jobs:
 
 
     - name: Verify kubectl configuration
+      env:
+        KUBECONFIG: ${{ secrets.KUBECONFIG }}
       run: |
         kubectl get pods --all-namespaces
 
