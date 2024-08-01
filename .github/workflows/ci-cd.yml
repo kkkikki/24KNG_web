@@ -88,11 +88,13 @@ jobs:
         aws-region: ${{ secrets.AWS_REGION }}
 
     - name: Update kubeconfig
-      run: aws eks get-token --cluster-name ${{ secrets.EKS_CLUSTER_NAME }}
-  
+      run: |
+        aws eks get-token --cluster-name ${{ secrets.EKS_CLUSTER_NAME }}
+        aws eks update-kubeconfig --name ${{ secrets.EKS_CLUSTER_NAME }} --region ap-northeast-2
+
     - name: Apply Kubernetes Secret directly
       run: |
-        kubectl apply -f - <<EOF
+        kubectl apply -f - --validate=false <<EOF
         apiVersion: v1
         kind: Secret
         metadata:
