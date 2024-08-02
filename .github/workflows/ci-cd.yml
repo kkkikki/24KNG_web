@@ -149,5 +149,5 @@ jobs:
         git config --global user.name "kkkikki"
         git config --global user.email "kaseykim7123@gmail.com"
         git add manifest/deployment.yaml
-        git commit -m "Update image to ${{ github.sha }}"
+        git diff-index --quiet HEAD || git commit -m "Update image to ${{ github.sha }}"
         git push
