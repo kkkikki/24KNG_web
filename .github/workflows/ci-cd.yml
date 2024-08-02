@@ -123,16 +123,22 @@ jobs:
         ./get_helm.sh
         helm version
 
-    - name: Install ingress-nginx
+    - name: Create namespace if not exists
       run: |
         kubectl get namespace ingress-nginx || kubectl create namespace ingress-nginx
+
+    - name: Add ingress-nginx repo
+      run: |
         helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
         helm repo update
-        helm install ingress-nginx ingress-nginx/ingress-nginx --namespace ingress-nginx
+
+    - name: Install or upgrade ingress-nginx
+      run: |
+        helm upgrade --install ingress-nginx ingress-nginx/ingress-nginx --namespace ingress-nginx
 
     - name: Install argocd
       run: |
-        kubectl create namespace argocd
+        kubectl create namespace argocd || true
         kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
 
     - name: Apply Kubernetes Secret directly
