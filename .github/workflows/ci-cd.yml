@@ -123,6 +123,7 @@ jobs:
         kind: Secret
         metadata:
           name: db-credentials
+          namespace: default
         type: Opaque
         data:
           DB_PASSWORD: $(echo -n "${{ secrets.DB_PASSWORD }}" | base64 -w 0)
