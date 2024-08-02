@@ -130,6 +130,11 @@ jobs:
         helm repo update
         helm install ingress-nginx ingress-nginx/ingress-nginx --namespace ingress-nginx
 
+    - name: Install argocd
+      run: |
+        kubectl create namespace argocd
+        kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+
     - name: Apply Kubernetes Secret directly
       run: |
         kubectl apply -f - <<EOF
