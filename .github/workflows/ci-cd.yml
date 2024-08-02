@@ -69,7 +69,7 @@ jobs:
         docker push ${{ env.DOCKER_IMAGE }}:${{ github.sha }}
         docker push ${{ env.DOCKER_IMAGE }}:latest
 
-  update-argocd-repo:
+  update-argocd-repo: 
     needs: build-and-push
     runs-on: ubuntu-latest
     steps:
@@ -86,15 +86,13 @@ jobs:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ${{ secrets.AWS_REGION }}
-        role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
- 
+
     - name: Install kubectl
       run: |
         curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
         chmod +x kubectl
         sudo mv kubectl /usr/local/bin/
-  
-  
+    
     - name: Install aws-iam-authenticator
       run: |
         curl -o aws-iam-authenticator https://amazon-eks.s3-us-west-2.amazonaws.com/1.16.8/2020-04-16/bin/linux/amd64/aws-iam-authenticator
@@ -103,12 +101,13 @@ jobs:
 
     - name: Configure kubectl
       run: |
-        aws eks get-token --cluster-name ${{ secrets.EKS_CLUSTER_NAME }}
+        TOKEN=$(aws eks get-token --cluster-name ${{ secrets.EKS_CLUSTER_NAME }} --region ${{ secrets.AWS_REGION }} --output json | jq -r '.status.token')
         aws eks update-kubeconfig --name ${{ secrets.EKS_CLUSTER_NAME }} --region ${{ secrets.AWS_REGION }}
+        kubectl config set-credentials aws --token=$TOKEN
+        kubectl config set-context --current --user=aws
 
     - name: Verify kubectl configuration
       run: |
-        kubectl config view
         kubectl get pods --all-namespaces
 
     - name: Apply Kubernetes Secret directly
