@@ -25,10 +25,14 @@
             right: 0;
             z-index: 1000;
             display: flex;
+            justify-content: center; /* 중앙 정렬 */
             align-items: center;
         }
         .logo {
-            height: 40px; /* Adjust as needed */
+            color: yellow;
+            font-size: 24px;
+            font-weight: bold;
+            text-transform: uppercase;
         }
         .main-content {
             padding-top: 80px;
@@ -86,7 +90,6 @@
             flex-direction: column;
             height: 100%;
         }
-
         @media screen and (max-width: 1200px) {
             .thumbs__item {
                 width: calc(33.33% - 20px);
@@ -106,7 +109,7 @@
 </head>
 <body>
     <header class="header">
-        <img src="./logo.png" alt="24KNG Logo" class="logo">
+        <div class="logo">ARTIST SPOTLIGHT</div>
     </header>
     <main class="main-content">
         <section class="thumbs">
