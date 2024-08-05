@@ -2,9 +2,7 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: [ main ]
   pull_request:
-    branches: [ main ]
 
 env:
   DOCKER_IMAGE: kaseykim7123/24kng_webpages
@@ -19,14 +17,14 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: '3.x'
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        python -m pip install Pillow
-        pip install -r requirements.txt
-        pip install mysqlclient
-        sudo apt-get update
-        sudo apt-get install -y libmysqlclient-dev
+    # - name: Install dependencies
+    #   run: |
+    #     python -m pip install --upgrade pip
+    #     python -m pip install Pillow
+    #     pip install -r requirements.txt
+    #     pip install mysqlclient
+    #     sudo apt-get update
+    #     sudo apt-get install -y libmysqlclient-dev
 
     - name: Set environment variables
       run: |
@@ -134,7 +132,7 @@ jobs:
 
     - name: Install or upgrade ingress-nginx
       run: |
-        helm install ingress-nginx ingress-nginx/ingress-nginx -n ingress-nginx
+        helm upgrade --install ingress-nginx ingress-nginx/ingress-nginx -n ingress-nginx
         kubectl get services -n ingress-nginx
 
     - name: Install argocd
