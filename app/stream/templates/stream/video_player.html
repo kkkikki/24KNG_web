@@ -1,59 +1,64 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ video.title }} - 24KNG</title>
+    <title>Video Player</title>
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <style>
         body {
-            font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
+            font-family: Arial, sans-serif;
             background-color: #f0f0f0;
         }
         .header {
-            background-color: #333;
-            color: white;
-            padding: 1rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            padding: 20px 30px;
+            background-color: #333;
+            color: white;
         }
         .logo {
-            font-size: 1.5rem;
-            font-weight: bold;
             text-decoration: none;
-            color: white;
+            color: red;
+            font-size: 18px;
         }
         .back-button {
-            text-decoration: none;
-            color: white;
-            padding: 0.5rem 1rem;
             background-color: #555;
-            border-radius: 5px;
+            padding: 5px 10px;
+            border-radius: 3px;
         }
         .video-container {
             max-width: 800px;
-            margin: 2rem auto;
+            margin: 20px auto;
             background-color: white;
-            border-radius: 10px;
+            border-radius: 8px;
             overflow: hidden;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
         }
-        video {
+        #video {
             width: 100%;
-            display: block;
+            height: auto;
+        }
+        .video-info {
+            padding: 10px;
+            position: relative;
         }
         .video-title {
-            padding: 1rem;
-            font-size: 1.2rem;
+            font-size: 18px;
             font-weight: bold;
+            margin-bottom: 10px;
+        }
+        #qualitySelector {
+            position: absolute;
+            right: 10px;
+            top: 10px;
         }
         #error-message {
             color: red;
-            padding: 1rem;
-            text-align: center;
+            margin-top: 10px;
         }
     </style>
 </head>
@@ -65,59 +70,260 @@
 
     <div class="video-container" role="main">
         <video id="video" controls></video>
-        <div class="video-title">{{ video.title }}</div>
-        <div id="error-message"></div>
+        <div class="video-info">
+            <div class="video-title">{{ video.title }}</div>
+            <select id="qualitySelector">
+                <option value="-1">자동</option>
+            </select>
+            <div id="error-message"></div>
+        </div>
     </div>
 
     <script>
-        var video = document.getElementById('video');
-        var videoSrc = "{{ video.video_url }}";
-        var maxRetries = 3;
-        var currentRetry = 0;
+        const video = document.getElementById('video');
+        const qualitySelector = document.getElementById('qualitySelector');
+        const errorMessage = document.getElementById('error-message');
+        const videoSrc = "{{ video.video_url }}";
+        let hls;
 
-        function loadVideo() {
+        function initPlayer() {
             if (Hls.isSupported()) {
-                var hls = new Hls();
+                hls = new Hls({
+                    autoStartLoad: true,
+                    startPosition: -1,
+                    capLevelToPlayerSize: false,
+                    debug: false,
+                    defaultAudioCodec: undefined,
+                    maxBufferLength: 30,
+                    maxMaxBufferLength: 600,
+                    maxBufferSize: 60 * 1000 * 1000, // 60 MB
+                });
+
                 hls.loadSource(videoSrc);
                 hls.attachMedia(video);
-                hls.on(Hls.Events.MANIFEST_PARSED, function() {
-                    video.play();
+
+                hls.on(Hls.Events.MANIFEST_PARSED, function(event, data) {
+                    const availableQualities = data.levels.map((l) => l.height);
+
+                    // 화질 옵션 생성
+                    qualitySelector.innerHTML = '<option value="-1">자동</option>';
+                    availableQualities.forEach((quality, index) => {
+                        const option = document.createElement('option');
+                        option.value = index;
+                        option.textContent = `${quality}p`;
+                        qualitySelector.appendChild(option);
+                    });
                 });
+
                 hls.on(Hls.Events.ERROR, function(event, data) {
                     if (data.fatal) {
-                        retryLoad();
+                        switch(data.type) {
+                            case Hls.ErrorTypes.NETWORK_ERROR:
+                                hls.startLoad();
+                                break;
+                            case Hls.ErrorTypes.MEDIA_ERROR:
+                                hls.recoverMediaError();
+                                break;
+                            default:
+                                hls.destroy();
+                                errorMessage.textContent = "비디오를 불러오는 데 실패했습니 다. 페이지를 새로고침 해주세요.";
+                                break;
+                        }
                     }
                 });
+
+                video.play();
             }
-            // HLS를 지원하지 않는 브라우저를 위한 폴백
             else if (video.canPlayType('application/vnd.apple.mpegurl')) {
                 video.src = videoSrc;
                 video.addEventListener('loadedmetadata', function() {
                     video.play();
                 });
-                video.addEventListener('error', retryLoad);
+                qualitySelector.style.display = 'none';
+            }
+            else {
+                errorMessage.textContent = "이 브라우저는 비디오 재생을 지원하지 않습니다.";
+                qualitySelector.style.display = 'none';
             }
         }
 
-        function retryLoad() {
-            if (currentRetry < maxRetries) {
-                currentRetry++;
-                console.log('Retrying video load, attempt ' + currentRetry);
-                setTimeout(loadVideo, 2000); // 2초 후 다시 시도
+        qualitySelector.addEventListener('change', function(event) {
+            if (!hls) return;
+            const selectedLevel = parseInt(event.target.value);
+            if (selectedLevel === -1) {
+                hls.currentLevel = -1; // 자동
             } else {
-                console.log('Max retries reached. Video load failed.');
-                document.getElementById('error-message').textContent = '비디오를 불러오는 데 실패했습니다. 나중에 다시 시도해주세요.';
-            }
-        }
-
-        loadVideo(); // 초기 로드
-
-        // 전체적인 에러 처리
-        video.addEventListener('error', function() {
-            if (currentRetry >= maxRetries) {
-                document.getElementById('error-message').textContent = '비디오를 불러오는 데 실패했습니다. 나중에 다시 시도해주세요.';
+                hls.nextLevel = selectedLevel; // 부드러운 전환을 위해 nextLevel 사용
             }
         });
+
+        // 페이지 로드 시 플레이어 초기화
+        window.addEventListener('load', initPlayer);
+    </script>
+</body>
+</html>
+root@streaming-app-fcbc99d87-pmjfg:/app/stream/templates/stream# cat ./video_player.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Player</title>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 30px;
+            background-color: #333;
+            color: white;
+        }
+        .logo {
+            text-decoration: none;
+            color: red;
+            font-size: 18px;
+        }
+        .back-button {
+            background-color: #555;
+            padding: 5px 10px;
+            border-radius: 3px;
+        }
+        .video-container {
+            max-width: 800px;
+            margin: 20px auto;
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        #video {
+            width: 100%;
+            height: auto;
+        }
+        .video-info {
+            padding: 10px;
+            position: relative;
+        }
+        .video-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        #qualitySelector {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+        }
+        #error-message {
+            color: red;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <a href="{% url 'video_list' %}" class="logo">24KNG</a>
+        <a href="{% url 'video_list' %}" class="back-button">← Back</a>
+    </div>
+
+    <div class="video-container" role="main">
+        <video id="video" controls></video>
+        <div class="video-info">
+            <div class="video-title">{{ video.title }}</div>
+            <select id="qualitySelector">
+                <option value="-1">자동</option>
+            </select>
+            <div id="error-message"></div>
+        </div>
+    </div>
+
+    <script>
+        const video = document.getElementById('video');
+        const qualitySelector = document.getElementById('qualitySelector');
+        const errorMessage = document.getElementById('error-message');
+        const videoSrc = "{{ video.video_url }}";
+        let hls;
+
+        function initPlayer() {
+            if (Hls.isSupported()) {
+                hls = new Hls({
+                    autoStartLoad: true,
+                    startPosition: -1,
+                    capLevelToPlayerSize: false,
+                    debug: false,
+                    defaultAudioCodec: undefined,
+                    maxBufferLength: 30,
+                    maxMaxBufferLength: 600,
+                    maxBufferSize: 60 * 1000 * 1000, // 60 MB
+                });
+
+                hls.loadSource(videoSrc);
+                hls.attachMedia(video);
+
+                hls.on(Hls.Events.MANIFEST_PARSED, function(event, data) {
+                    const availableQualities = data.levels.map((l) => l.height);
+
+                    // 화질 옵션 생성
+                    qualitySelector.innerHTML = '<option value="-1">자동</option>';
+                    availableQualities.forEach((quality, index) => {
+                        const option = document.createElement('option');
+                        option.value = index;
+                        option.textContent = `${quality}p`;
+                        qualitySelector.appendChild(option);
+                    });
+                });
+
+                hls.on(Hls.Events.ERROR, function(event, data) {
+                    if (data.fatal) {
+                        switch(data.type) {
+                            case Hls.ErrorTypes.NETWORK_ERROR:
+                                hls.startLoad();
+                                break;
+                            case Hls.ErrorTypes.MEDIA_ERROR:
+                                hls.recoverMediaError();
+                                break;
+                            default:
+                                hls.destroy();
+                                errorMessage.textContent = "비디오를 불러오는 데 실패했습니 다. 페이지를 새로고침 해주세요.";
+                                break;
+                        }
+                    }
+                });
+
+                video.play();
+            }
+            else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+                video.src = videoSrc;
+                video.addEventListener('loadedmetadata', function() {
+                    video.play();
+                });
+                qualitySelector.style.display = 'none';
+            }
+            else {
+                errorMessage.textContent = "이 브라우저는 비디오 재생을 지원하지 않습니다.";
+                qualitySelector.style.display = 'none';
+            }
+        }
+
+        qualitySelector.addEventListener('change', function(event) {
+            if (!hls) return;
+            const selectedLevel = parseInt(event.target.value);
+            if (selectedLevel === -1) {
+                hls.currentLevel = -1; // 자동
+            } else {
+                hls.nextLevel = selectedLevel; // 부드러운 전환을 위해 nextLevel 사용
+            }
+        });
+
+        // 페이지 로드 시 플레이어 초기화
+        window.addEventListener('load', initPlayer);
     </script>
 </body>
 </html>
